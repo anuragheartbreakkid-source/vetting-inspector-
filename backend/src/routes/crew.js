@@ -17,6 +17,12 @@ function thematicAreasForRole(role) {
   return ROLE_THEMATIC_AREAS[role] || ['Crew Management & Training', 'Safety and Security'];
 }
 
+function isIsoDate(value) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const parsed = new Date(`${value}T00:00:00.000Z`);
+  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+}
+
 const router = Router();
 
 // GET /api/crew - list crew profiles for a ship
@@ -28,8 +34,11 @@ router.get('/', (req, res) => {
 
 // POST /api/crew - add a crew member profile
 router.post('/', (req, res) => {
-  const { shipId = 'ship-1', name, role, yearsOfExperience = 0 } = req.body || {};
+  const { shipId = 'ship-1', name, role, yearsOfExperience = 0, joiningDate } = req.body || {};
   if (!name || !role) return res.status(400).json({ error: 'name and role are required' });
+  if (joiningDate && !isIsoDate(joiningDate)) {
+    return res.status(400).json({ error: 'joiningDate must be a valid YYYY-MM-DD date' });
+  }
 
   const defaultPifScores = {};
   for (const pif of PIFS) defaultPifScores[pif] = 4;
@@ -40,6 +49,7 @@ router.post('/', (req, res) => {
     name,
     role,
     yearsOfExperience,
+    joiningDate: joiningDate || null,
     pifScores: defaultPifScores,
     trainingNeeds: [],
   };

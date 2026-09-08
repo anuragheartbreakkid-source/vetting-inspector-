@@ -66,6 +66,7 @@ export interface CrewMember {
   name: string;
   role: string;
   yearsOfExperience: number;
+  joiningDate?: string | null;
   pifScores: Record<string, number>;
   trainingNeeds: string[];
 }

@@ -10,6 +10,16 @@ const GRADES: Grade[] = [
   'Not as Expected',
 ];
 
+const ROLES = [
+  'Master',
+  'Chief Officer',
+  'Junior Officer',
+  'Chief Engineer',
+  'Junior Engineer',
+  'Deck Rating',
+  'Engine Room Rating',
+];
+
 export function IndividualAssessmentPage() {
   const [crew, setCrew] = useState<CrewMember[]>([]);
   const [selectedMemberId, setSelectedMemberId] = useState('');
@@ -17,6 +27,12 @@ export function IndividualAssessmentPage() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
+  const [addingCrew, setAddingCrew] = useState(false);
+  const [newCrewMember, setNewCrewMember] = useState({
+    name: '',
+    role: 'Junior Officer',
+    joiningDate: '',
+  });
 
   useEffect(() => {
     api.getCrew().then(({ crew: members }) => {
@@ -35,6 +51,25 @@ export function IndividualAssessmentPage() {
       setNotes('');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const addCrewMember = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!newCrewMember.name.trim() || !newCrewMember.joiningDate) return;
+
+    setAddingCrew(true);
+    try {
+      const created = await api.createCrewMember({
+        name: newCrewMember.name.trim(),
+        role: newCrewMember.role,
+        joiningDate: newCrewMember.joiningDate,
+      });
+      setCrew((members) => [...members, created]);
+      setSelectedMemberId(created.id);
+      setNewCrewMember({ name: '', role: 'Junior Officer', joiningDate: '' });
+    } finally {
+      setAddingCrew(false);
     }
   };
 
@@ -85,6 +120,45 @@ export function IndividualAssessmentPage() {
           >
             {loading ? 'Generating…' : 'Start 10-Question Assessment'}
           </button>
+        </Card>
+        <Card className="max-w-xl">
+          <h3 className="font-medium text-gray-900 mb-1">Add Onboard Crew Member</h3>
+          <p className="text-sm text-gray-500 mb-3">
+            Add an officer, engineer, or rating before starting their individual assessment.
+          </p>
+          <form onSubmit={addCrewMember} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <input
+              aria-label="Crew member name"
+              className="border rounded px-3 py-2 text-sm"
+              placeholder="Full name"
+              value={newCrewMember.name}
+              onChange={(event) => setNewCrewMember((member) => ({ ...member, name: event.target.value }))}
+              required
+            />
+            <select
+              aria-label="Crew member rank"
+              className="border rounded px-3 py-2 text-sm"
+              value={newCrewMember.role}
+              onChange={(event) => setNewCrewMember((member) => ({ ...member, role: event.target.value }))}
+            >
+              {ROLES.map((role) => <option key={role}>{role}</option>)}
+            </select>
+            <input
+              aria-label="Date joined vessel"
+              className="border rounded px-3 py-2 text-sm"
+              type="date"
+              value={newCrewMember.joiningDate}
+              onChange={(event) => setNewCrewMember((member) => ({ ...member, joiningDate: event.target.value }))}
+              required
+            />
+            <button
+              type="submit"
+              disabled={addingCrew}
+              className="sm:col-span-3 justify-self-start bg-slate-800 hover:bg-slate-900 disabled:opacity-50 text-white px-4 py-2 rounded text-sm font-medium"
+            >
+              {addingCrew ? 'Adding…' : 'Add Crew Member'}
+            </button>
+          </form>
         </Card>
       </div>
     );

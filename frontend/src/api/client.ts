@@ -73,7 +73,13 @@ export const api = {
     return data;
   },
 
-  async createCrewMember(payload: { shipId?: string; name: string; role: string; yearsOfExperience?: number }): Promise<CrewMember> {
+  async createCrewMember(payload: {
+    shipId?: string;
+    name: string;
+    role: string;
+    yearsOfExperience?: number;
+    joiningDate?: string;
+  }): Promise<CrewMember> {
     const { data } = await client.post('/crew', payload);
     return data;
   },
