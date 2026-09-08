@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: vetting-inspector-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+
+  - type: web
+    name: vetting-inspector-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://vetting-inspector-api.onrender.com/api

@@ -1,0 +1,5 @@
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; align-items: end; }
+.cards { display: grid; gap: 10px; }
+.card { color: #172033; background: #f4f7fb; text-align: left; display: grid; gap: 5px; }
+.card span { font-size: .86rem; font-weight: 400; }
+.question { border-top: 1px solid #dbe3ee; padding: 20px 0; display: grid; gap: 12px; }

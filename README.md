@@ -147,21 +147,41 @@ This application adheres to:
 - PostgreSQL 12+
 - Docker (optional)
 
-### Frontend Setup
+### Run locally
 ```bash
-cd frontend
+cd backend
 npm install
 npm start
 ```
 
-### Backend Setup
+In a second terminal:
 ```bash
-cd backend
+cd frontend
 npm install
 npm run dev
 ```
 
-### Database Setup
+The frontend is available at the URL printed by Vite. It connects to
+`http://localhost:4000/api` by default.
+
+### Deploy to Render
+
+The repository includes `render.yaml`. In Render, select **New + → Blueprint**
+and connect this repository. Render creates:
+
+- `vetting-inspector-api`, the Express API
+- `vetting-inspector-web`, the static React frontend
+
+Before the static site is deployed, replace `VITE_API_URL` in the frontend
+service's environment variables with the API service URL followed by `/api`
+(for example, `https://vetting-inspector-api.onrender.com/api`).
+
+### Data storage
+
+This basic version keeps vessels and inspections in server memory. Data resets
+when the API restarts; connect a managed database before production use.
+
+### Database Setup (future enhancement)
 ```bash
 cd database
 npm run migrations
