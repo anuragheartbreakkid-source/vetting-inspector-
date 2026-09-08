@@ -143,30 +143,37 @@ This application adheres to:
 ## 🔧 Installation & Setup
 
 ### Prerequisites
-- Node.js 18+
-- PostgreSQL 12+
-- Docker (optional)
+- Node.js 24.19.0 (or a compatible Node 24 release)
 
 ### Frontend Setup
 ```bash
 cd frontend
-npm install
-npm start
+npm ci
+npm run dev
 ```
 
 ### Backend Setup
 ```bash
 cd backend
-npm install
+npm ci
 npm run dev
 ```
 
-### Database Setup
-```bash
-cd database
-npm run migrations
-npm run seed
-```
+The frontend development server proxies `/api` requests to `http://localhost:4000`.
+The current implementation uses an in-memory store, so inspections, observations, crew
+changes, and evidence metadata are lost when the backend restarts.
+
+### Deploying to Render
+
+1. Push the repository, including `render.yaml`, to a GitHub branch.
+2. In Render, choose **New → Blueprint**, connect the repository, and select that branch.
+3. Render discovers `render.yaml`; create the `sire2-vetting-inspector` web service.
+4. Wait for the build command to install both lockfiles and build `frontend/dist`. Render
+   starts `backend/src/server.js` and checks `/api/health`.
+
+The service serves both the React SPA and API from one origin, so no frontend API URL or
+CORS environment variable is required. Render provides `PORT`; the backend reads it and
+falls back to port 4000 only for local development.
 
 ---
 

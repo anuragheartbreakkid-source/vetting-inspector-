@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: sire2-vetting-inspector
+    runtime: node
+    buildCommand: npm --prefix backend ci && npm --prefix frontend ci && npm --prefix frontend run build
+    startCommand: node backend/src/server.js
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 24.19.0
