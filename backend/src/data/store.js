@@ -93,6 +93,42 @@ export const crew = [
     pifScores: buildDefaultPifScores(),
     trainingNeeds: [],
   },
+  {
+    id: uuid(),
+    shipId: 'ship-1',
+    name: '3/O A. Malik',
+    role: 'Junior Officer',
+    yearsOfExperience: 3,
+    pifScores: buildDefaultPifScores(),
+    trainingNeeds: [],
+  },
+  {
+    id: uuid(),
+    shipId: 'ship-1',
+    name: '4/E L. Chen',
+    role: 'Junior Engineer',
+    yearsOfExperience: 2,
+    pifScores: buildDefaultPifScores(),
+    trainingNeeds: [],
+  },
+  {
+    id: uuid(),
+    shipId: 'ship-1',
+    name: 'A/B D. Kumar',
+    role: 'Deck Rating',
+    yearsOfExperience: 6,
+    pifScores: buildDefaultPifScores(),
+    trainingNeeds: [],
+  },
+  {
+    id: uuid(),
+    shipId: 'ship-1',
+    name: 'Oiler S. Okafor',
+    role: 'Engine Room Rating',
+    yearsOfExperience: 5,
+    pifScores: buildDefaultPifScores(),
+    trainingNeeds: [],
+  },
 ];
 
 export const inspections = [];

@@ -7,6 +7,10 @@ const ROLE_THEMATIC_AREAS = {
   Master: ['Navigation and Bridge Management', 'Safety and Security', 'Certification & Documentation'],
   'Chief Officer': ['Navigation and Bridge Management', 'Cargo and Ballast Operations', 'Pollution Prevention (MARPOL)'],
   'Chief Engineer': ['Machinery and Engine Room', 'Safety and Security', 'Pollution Prevention (MARPOL)'],
+  'Junior Officer': ['Navigation and Bridge Management', 'Safety and Security', 'Crew Management & Training'],
+  'Junior Engineer': ['Machinery and Engine Room', 'Safety and Security', 'Pollution Prevention (MARPOL)'],
+  'Deck Rating': ['Navigation and Bridge Management', 'Safety and Security', 'Ship Maintenance'],
+  'Engine Room Rating': ['Machinery and Engine Room', 'Safety and Security', 'Pollution Prevention (MARPOL)'],
 };
 
 function thematicAreasForRole(role) {
@@ -73,6 +77,7 @@ router.post('/:id/assessment', (req, res) => {
   const questions = generateCviq({
     count,
     thematicAreas: thematicAreasForRole(member.role),
+    ensureThematicCoverage: true,
   });
   const assessment = {
     id: createId(),

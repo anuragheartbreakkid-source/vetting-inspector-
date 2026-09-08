@@ -16,6 +16,7 @@ export function generateCviq({
   shipAgeYears = 0,
   priorObservationCategories = [],
   thematicAreas = [],
+  ensureThematicCoverage = false,
 } = {}) {
   const categoryBoost = new Map();
   for (const category of priorObservationCategories) {
@@ -38,7 +39,17 @@ export function generateCviq({
   // tiers using the question id as a stable tiebreaker.
   weighted.sort((a, b) => b.weight - a.weight || a.question.id.localeCompare(b.question.id));
 
-  const selected = weighted.slice(0, Math.min(count, weighted.length)).map((w) => ({
+  const maximumCount = Math.min(count, weighted.length);
+  let selectedWeighted = weighted;
+  if (ensureThematicCoverage && thematicAreas.length > 0) {
+    const coverage = thematicAreas
+      .map((area) => weighted.find(({ question }) => question.thematicArea === area))
+      .filter(Boolean);
+    const coveredQuestionIds = new Set(coverage.map(({ question }) => question.id));
+    selectedWeighted = [...coverage, ...weighted.filter(({ question }) => !coveredQuestionIds.has(question.id))];
+  }
+
+  const selected = selectedWeighted.slice(0, maximumCount).map((w) => ({
     ...w.question,
     selectionWeight: Math.round(w.weight * 100) / 100,
   }));
