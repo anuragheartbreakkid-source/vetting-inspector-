@@ -83,6 +83,11 @@ export const api = {
     return data;
   },
 
+  async createCrewAssessment(id: string, count = 10): Promise<Inspection> {
+    const { data } = await client.post(`/crew/${id}/assessment`, { count });
+    return data;
+  },
+
   async getDashboard(): Promise<DashboardSummary> {
     const { data } = await client.get('/compliance/dashboard');
     return data;

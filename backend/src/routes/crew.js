@@ -1,6 +1,17 @@
 import { Router } from 'express';
-import { crew, createId } from '../data/store.js';
+import { crew, createId, inspections } from '../data/store.js';
 import { PIFS } from '../data/thematicAreas.js';
+import { generateCviq } from '../utils/cviq.js';
+
+const ROLE_THEMATIC_AREAS = {
+  Master: ['Navigation and Bridge Management', 'Safety and Security', 'Certification & Documentation'],
+  'Chief Officer': ['Navigation and Bridge Management', 'Cargo and Ballast Operations', 'Pollution Prevention (MARPOL)'],
+  'Chief Engineer': ['Machinery and Engine Room', 'Safety and Security', 'Pollution Prevention (MARPOL)'],
+};
+
+function thematicAreasForRole(role) {
+  return ROLE_THEMATIC_AREAS[role] || ['Crew Management & Training', 'Safety and Security'];
+}
 
 const router = Router();
 
@@ -51,6 +62,33 @@ router.put('/:id/pif', (req, res) => {
     .map(([pif]) => pif);
 
   res.json(member);
+});
+
+// POST /api/crew/:id/assessment - generate an individual, rank-targeted CVIQ
+router.post('/:id/assessment', (req, res) => {
+  const member = crew.find((c) => c.id === req.params.id);
+  if (!member) return res.status(404).json({ error: 'Crew member not found' });
+
+  const { count = 10 } = req.body || {};
+  const questions = generateCviq({
+    count,
+    thematicAreas: thematicAreasForRole(member.role),
+  });
+  const assessment = {
+    id: createId(),
+    shipId: member.shipId,
+    crewMemberId: member.id,
+    crewMemberName: member.name,
+    crewMemberRole: member.role,
+    assessmentType: 'Individual Crew Assessment',
+    createdAt: new Date().toISOString(),
+    status: 'In Progress',
+    questions: questions.map((question) => question.id),
+    answers: [],
+  };
+
+  inspections.push(assessment);
+  res.status(201).json({ ...assessment, questions });
 });
 
 export default router;

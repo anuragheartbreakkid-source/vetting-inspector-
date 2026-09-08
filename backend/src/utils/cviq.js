@@ -15,6 +15,7 @@ export function generateCviq({
   count = 100,
   shipAgeYears = 0,
   priorObservationCategories = [],
+  thematicAreas = [],
 } = {}) {
   const categoryBoost = new Map();
   for (const category of priorObservationCategories) {
@@ -23,7 +24,10 @@ export function generateCviq({
 
   const ageFactor = shipAgeYears > 15 ? 1.15 : shipAgeYears > 8 ? 1.05 : 1.0;
 
-  const weighted = QUESTION_LIBRARY.map((question) => {
+  const questionPool = thematicAreas.length > 0
+    ? QUESTION_LIBRARY.filter((question) => thematicAreas.includes(question.thematicArea))
+    : QUESTION_LIBRARY;
+  const weighted = questionPool.map((question) => {
     const boost = categoryBoost.get(question.thematicArea) || 0;
     const weight = Math.min(1, question.probability * ageFactor + boost) * question.riskWeight;
     return { question, weight };

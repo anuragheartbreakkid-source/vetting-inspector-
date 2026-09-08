@@ -39,6 +39,10 @@ export interface Inspection {
   questions: Question[];
   answers: Answer[];
   readinessScore?: number;
+  crewMemberId?: string;
+  crewMemberName?: string;
+  crewMemberRole?: string;
+  assessmentType?: string;
 }
 
 export interface Observation {

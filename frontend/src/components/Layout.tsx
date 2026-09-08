@@ -6,6 +6,7 @@ const links = [
   { to: '/previous-observations', label: 'Ship Previous Observations' },
   { to: '/fleet-observations', label: 'Fleet Observation Tracking' },
   { to: '/crew', label: 'Crew Competency' },
+  { to: '/individual-assessment', label: 'Individual Assessment' },
   { to: '/reports', label: 'Reports' },
 ];
 
