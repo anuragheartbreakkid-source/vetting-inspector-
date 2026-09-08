@@ -36,8 +36,7 @@ export function IndividualAssessmentPage() {
 
   useEffect(() => {
     api.getCrew().then(({ crew: members }) => {
-      setCrew(members);
-      setSelectedMemberId(members[0]?.id ?? '');
+      setCrew(members.filter((member) => member.joiningDate));
     });
   }, []);
 
@@ -106,12 +105,18 @@ export function IndividualAssessmentPage() {
             value={selectedMemberId}
             onChange={(event) => setSelectedMemberId(event.target.value)}
           >
+            <option value="" disabled>Select a crew member after adding their details</option>
             {crew.map((member) => (
               <option key={member.id} value={member.id}>
                 {member.name} — {member.role}
               </option>
             ))}
           </select>
+          {crew.length === 0 && (
+            <p className="mt-2 text-sm text-gray-500">
+              Add an onboard crew member below before starting an assessment.
+            </p>
+          )}
           <button
             type="button"
             disabled={!selectedMemberId || loading}
